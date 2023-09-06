@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Potta+One&family=Roboto:wght@100&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="prism.css">
+    <script src="prism.js"></script>
+    <link rel="stylesheet" href="style.css">
+    <title>Cheatsheet - NeelB</title>
+</head>
+
+<body>
+    <nav>
+        <span class="logo"><img src="copy.png" alt=""></span>
+        <div class="content center">
+            C++ DSA Cheatsheet!
+        </div>
+    </nav>
+    <div class="container">
+        <ol>
+            <li><b>Write a program to reverse an array or string.</b>
+                <pre class=language-c++ "><code>// Iterative C++ program to reverse an array
+#include&lt;bits/stdc++.h&gt;
+using namespace std;
+                    
+/* Function to reverse arr[] from start to end*/
+void rvereseArray(int arr[], int start, int end)
+{
+    while (start < end)
+    {
+        int temp = arr[start];
+        arr[start] = arr[end];
+        arr[end] = temp;
+        start++;
+        end--;
+    }
+}	
+                    
+/* Utility function to print an array */
+void printArray(int arr[], int size)
+{
+    for (int i = 0; i < size; i++)
+        cout << arr[i] << " ";
+                    
+        cout << endl;
+}
+                    
+/* Driver function to test above functions */
+int main()
+{
+    int arr[] = {1, 2, 3, 4, 5, 6};
+    int n = sizeof(arr) / sizeof(arr[0]);
+                    
+    // To print original array
+    printArray(arr, n);
+                        
+    // Function calling
+    rvereseArray(arr, 0, n-1);
+    cout << "Reversed array is " << endl;
+                        
+    // To print the Reversed array
+    printArray(arr, n);
+                        
+    return 0;
+}
+</code></pre>
+            </li>
+            <li><b>Maximum and minimum of an array using minimum number of comparisons.</b>
+                <pre class="language-c++ "><code>// C++ implementation of the above approach
+#include&lt;algorithm&gt;
+#include&lt;iostream&gt;
+using namespace std;
+                    
+struct Pair {
+    int min;
+    int max;
+};
+                    
+Pair getMinMax(int arr[], int n)
+{
+    Pair minmax;
+                    
+    sort(arr, arr + n);
+                    
+    minmax.min = arr[0];
+    minmax.max = arr[n - 1];
+                    
+    return minmax;
+}
+                    
+int main()
+{
+    int arr[] = { 1000, 11, 445, 1, 330, 3000 };
+    int arr_size = sizeof(arr) / sizeof(arr[0]);
+                    
+    Pair minmax = getMinMax(arr, arr_size);
+                    
+    cout << "Minimum element is " << minmax.min << endl;
+    cout << "Maximum element is " << minmax.max << endl;
+                    
+    return 0;
+}
+                    
+</code></pre>
+            </li>
+            <li><b>Merge Two Balanced Binary Search Trees.</b>
+                <pre class="language-c++ "><code>// C++ program to Merge Two Balanced Binary Search Trees
+#include&lt;bits/stdc++.h&gt;
+using namespace std;
+                    
+/* A binary tree node has data, pointer to left child
+and a pointer to right child */
+class node
+{
+    public:
+    int data;
+    node* left;
+    node* right;
+};
+                    
+// A utility function to merge two sorted arrays into one
+    int *merge(int arr1[], int arr2[], int m, int n);
+                    
+// A helper function that stores inorder
+// traversal of a tree in inorder array
+    void storeInorder(node* node, int inorder[], int *index_ptr);
+                    
+
+    node* sortedArrayToBST(int arr[], int start, int end);
+                    
+    /* This function merges two balanced
+    BSTs with roots as root1 and root2.
+    m and n are the sizes of the trees respectively */
+    node* mergeTrees(node *root1, node *root2, int m, int n)
+    {
+// Store inorder traversal of
+// first tree in an array arr1[]
+        int *arr1 = new int[m];
+        int i = 0;
+        storeInorder(root1, arr1, &i);
+                    
+// Store inorder traversal of second
+// tree in another array arr2[]
+        int *arr2 = new int[n];
+        int j = 0;
+        storeInorder(root2, arr2, &j);
+                    
+// Merge the two sorted array into one
+        int *mergedArr = merge(arr1, arr2, m, n);
+                    
+// Construct a tree from the merged
+// array and return root of the tree
+        return sortedArrayToBST (mergedArr, 0, m + n - 1);
+    }
+                    
+/* Helper function that allocates
+a new node with the given data and
+NULL left and right pointers. */
+    node* newNode(int data)
+    {
+        node* Node = new node();
+        Node->data = data;
+        Node->left = NULL;
+        Node->right = NULL;
+                    
+        return(Node);
+    }
+                    
+// A utility function to print inorder
+// traversal of a given binary tree
+    void printInorder(node* node)
+    {
+        if (node == NULL)
+            return;
+                    
+/* first recur on left child */
+        printInorder(node->left);
+                    
+        cout << node->data << " ";
+                    
+/* now recur on right child */
+        printInorder(node->right);
+    }
+                    
+// A utility function to merge
+// two sorted arrays into one
+    int *merge(int arr1[], int arr2[], int m, int n)
+    {
+// mergedArr[] is going to contain result
+        int *mergedArr = new int[m + n];
+        int i = 0, j = 0, k = 0;
+                    
+// Traverse through both arrays
+        while (i < m && j < n)
+        {
+// Pick the smaller element and put it in mergedArr
+            if (arr1[i] < arr2[j])
+            {
+                mergedArr[k] = arr1[i];
+                i++;
+            }
+            else
+            {
+                mergedArr[k] = arr2[j];
+                j++;
+            }
+            k++;
+        }
+                    
+// If there are more elements in first array
+        while (i < m)
+        {
+            mergedArr[k] = arr1[i];
+            i++; k++;
+        }
+                    
+// If there are more elements in second array
+        while (j < n)
+        {
+            mergedArr[k] = arr2[j];
+            j++; k++;
+        }
+                    
+    return mergedArr;
+}
+                    
+// A helper function that stores inorder
+// traversal of a tree rooted with node
+void storeInorder(node* node, int inorder[], int *index_ptr)
+{
+    if (node == NULL)
+        return;
+                    
+/* first recur on left child */
+    storeInorder(node->left, inorder, index_ptr);
+                    
+    inorder[*index_ptr] = node->data;
+    (*index_ptr)++; // increase index for next entry
+                    
+/* now recur on right child */
+    storeInorder(node->right, inorder, index_ptr);
+}
+                    
+node* sortedArrayToBST(int arr[], int start, int end)
+{
+/* Base Case */
+    if (start > end)
+        return NULL;
+                    
+/* Get the middle element and make it root */
+    int mid = (start + end)/2;
+    node *root = newNode(arr[mid]);
+                    
+/* Recursively construct the left subtree and make it
+left child of root */
+    root->left = sortedArrayToBST(arr, start, mid-1);
+                    
+/* Recursively construct the right subtree and make it
+right child of root */
+    root->right = sortedArrayToBST(arr, mid+1, end);
+                    
+    return root;
+}
+                    
+int main()
+{
+/* Create following tree as first balanced BST
+100
+/ \
+50 300
+/ \
+20 70
+*/
+    node *root1 = newNode(100);
+    root1->left	 = newNode(50);
+    root1->right = newNode(300);
+    root1->left->left = newNode(20);
+    root1->left->right = newNode(70);
+                    
+/* Create following tree as second balanced BST
+80
+/ \
+40 120
+*/
+    node *root2 = newNode(80);
+    root2->left	 = newNode(40);
+    root2->right = newNode(120);
+                    
+    node *mergedTree = mergeTrees(root1, root2, 5, 3);
+                    
+    cout << "Following is Inorder traversal of the merged tree \n ";
+    printInorder(mergedTree);
+                    
+    return 0;
+}
+</code></pre>
+            </li>
+            <li><b>Given an array of size N containing only 0s, 1s, and 2s; sort the array in ascending order.</b>
+                <pre class="language-c++ "><code>#include&lt;iostream&gt;
+#include&lt;vector&gt;
+                    
+void sort012(std::vector&lt;int&gt; nums) {
+    int low = 0;            // represents the index of the next position for 0
+    int mid = 0;            // represents the index of the next position to be checked
+    int high = nums.size() - 1; // represents the index of the next position for 2
+                    
+    while (mid <= high) {
+        if (nums[mid] == 0) {
+            std::swap(nums[low], nums[mid]);
+            low++;
+            mid++;
+        } else if (nums[mid] == 1) {
+            mid++;
+        } else if (nums[mid] == 2) {
+            std::swap(nums[mid], nums[high]);
+            high--;
+        }
+    }
+}
+                    
+int main() {
+    std::vector&lt;int&gt; nums = {0, 1, 2, 1, 0, 2, 1, 0, 2};
+    sort012(nums);
+                    
+    std::cout &lt;&lt; "Sorted array: ";
+    for (int num : nums) {
+        std::cout << num << " ";
+    }
+    std::cout << std::endl;
+                    
+    return 0;
+}
+</code></pre>
+            </li>
+            <li><b>Given an array Arr[] of N integers. Find the contiguous sub-array(containing at least one number) which has the maximum sum and return its sum.</b>
+                <pre class="language-c++ "><code>#include&lt;iostream&gt;
+#include&lt;climits&gt;
+using namespace std;
+                    
+int maxSubarraySum(int arr[], int n) {
+    int maxSum = INT_MIN;  // Initialize the maximum sum with the smallest possible value.
+    int currentSum = 0;    // Initialize the current sum.
+                    
+    for (int i = 0; i < n; i++) {
+        currentSum += arr[i];
+                    
+// If the current sum becomes negative, reset it to 0.
+        if (currentSum < 0)
+            currentSum = 0;
+                    
+// Update the maximum sum if the current sum is greater.
+        if (currentSum > maxSum)
+            maxSum = currentSum;
+    }
+                    
+    return maxSum;
+}
+                    
+int main() {
+    int n;
+    cout << "Enter the number of elements in the array: ";
+    cin >> n;
+                    
+    int arr[n];
+    cout << "Enter the elements of the array:\n ";
+    for (int i = 0; i < n; i++)
+        cin >> arr[i];
+                    
+    int maxSum = maxSubarraySum(arr, n);
+    cout << "Maximum sum of a contiguous subarray: " << maxSum << endl;
+                    
+    return 0;
+}
+                    
+</code></pre>
+            </li>
+            <li><b>Given an array arr[] denoting heights of N towers and a positive integer K.
+
+                For each tower, you must perform exactly one of the following operations exactly once.
+                
+                Increase the height of the tower by K,
+                Decrease the height of the tower by K.
+                Find out the minimum possible difference between the height of the shortest and tallest towers after you have modified each tower.</b>
+                <pre class="language-c++ "><code>#include&lt;iostream&gt;
+#include&lt;algorithm&gt;
+using namespace std;
+                    
+int getMinDiff(int arr[], int n, int k) {
+// If there is only one tower, return 0 as the difference will be 0.
+    if (n == 1)
+        return 0;
+                    
+// Sort the array to get the minimum and maximum heights.
+    sort(arr, arr + n);
+                    
+    int minHeight = arr[0] + k;     // Minimum possible height after modification.
+    int maxHeight = arr[n - 1] - k; // Maximum possible height after modification.
+                    
+// If the minimum height becomes greater than the maximum height,
+// swap the values as the array is sorted in ascending order.
+    if (minHeight > maxHeight)
+        swap(minHeight, maxHeight);
+                    
+// Check the heights of the towers between the minimum and maximum possible heights.
+    for (int i = 1; i < n - 1; i++) {
+        int heightAdd = arr[i] + k;     // Height after increasing the tower.
+        int heightSub = arr[i] - k;     // Height after decreasing the tower.
+                    
+// If increasing the tower does not cause the maximum height to exceed maxHeight,
+// set maxHeight as the new maximum height.
+    if (heightAdd <= maxHeight)
+        maxHeight = heightAdd;
+                    
+// If decreasing the tower does not cause the minimum height to be less than minHeight,
+// set minHeight as the new minimum height.
+    if (heightSub >= minHeight)
+        minHeight = heightSub;
+    }
+                    
+// Return the difference between the new maximum and minimum heights.
+    return max(maxHeight - minHeight, 0);
+}
+                    
+int main() {
+    int n, k;
+    cout << "Enter the number of towers: ";
+    cin >> n;
+                    
+    int arr[n];
+    cout << "Enter the heights of the towers:\n ";
+    for (int i = 0; i < n; i++)
+        cin >> arr[i];
+                    
+    cout << "Enter the value of K: ";
+    cin >> k;
+                    
+    int minDiff = getMinDiff(arr, n, k);
+    cout << "Minimum possible difference between the height of the shortest and tallest towers: " << minDiff << endl;
+                    
+    return 0;
+}
+</code></pre>
+            </li>
+            <li><b>Given a matrix of size r*c. Traverse the matrix in spiral form.</b>
+                <pre class="language-c++ "><code>#include&lt;iostream&gt;
+using namespace std;
+                    
+void spiralTraverse(int matrix[][100], int r, int c) {
+    int topRow = 0, bottomRow = r - 1;
+    int leftCol = 0, rightCol = c - 1;
+                    
+    while (topRow <= bottomRow && leftCol <= rightCol) {
+// Traverse top row
+        for (int col = leftCol; col <= rightCol; col++)
+            cout << matrix[topRow][col] << " ";
+        topRow++;
+                    
+// Traverse right column
+        for (int row = topRow; row <= bottomRow; row++)
+            cout << matrix[row][rightCol] << " ";
+        rightCol--;
+                    
+// Traverse bottom row
+        if (topRow <= bottomRow) {
+            for (int col = rightCol; col >= leftCol; col--)
+                cout << matrix[bottomRow][col] << " ";
+            bottomRow--;
+        }
+                    
+// Traverse left column
+        if (leftCol <= rightCol) {
+            for (int row = bottomRow; row >= topRow; row--)
+                cout << matrix[row][leftCol] << " ";
+            leftCol++;
+        }
+    }
+}
+                    
+int main() {
+    int r, c;
+    cout << "Enter the number of rows: ";
+    cin >> r;
+    cout << "Enter the number of columns: ";
+    cin >> c;
+                    
+    int matrix[100][100];
+    cout << "Enter the matrix elements:\n ";
+    for (int i = 0; i < r; i++) {
+        for (int j = 0; j < c; j++) {
+            cin >> matrix[i][j];
+        }
+    }
+                    
+    cout << "Matrix elements in spiral form: ";
+    spiralTraverse(matrix, r, c);
+    cout << endl;
+                    
+    return 0;
+}
+</code></pre>
+            </li>
+            <li><b>Given an array nums[] of size n, where nums[i] denotes the number of characters in one word. Let K be the limit on the number of characters that can be put in one line (line width). Put line breaks in the given sequence such that the lines are printed neatly.
+                Assume that the length of each word is smaller than the line width. When line breaks are inserted there is a possibility that extra spaces are present in each line. The extra spaces include spaces put at the end of every line except the last one. 
+                
+                You have to minimize the following total cost where total cost = Sum of cost of all lines, where cost of line is = (Number of extra spaces in the line)^2.</b>
+                <pre class="language-c++ "><code>#include&lt;iostream&gt;
+#include&lt;vector&gt;
+#include&lt;cmath&gt;
+using namespace std;
+                    
+void printNeatly(vector&lt;int&gt;& nums, int K) {
+    int n = nums.size();
+                    
+// Calculate the extra spaces for each possible line break position.
+    vector&lt;vector&lt;int&gt;&gt; extraSpaces(n + 1, vector&lt;int&gt;(n + 1, 0));
+    for (int i = 1; i <= n; i++) {
+        extraSpaces[i][i] = K - nums[i - 1];
+        for (int j = i + 1; j <= n; j++) {
+            extraSpaces[i][j] = extraSpaces[i][j - 1] - nums[j - 1] - 1;
+        }
+    }
+                    
+// Calculate the cost for each line break position.
+    vector&lt;vector&lt;int&gt;&gt; cost(n + 1, vector&lt;int&gt;(n + 1, 0));
+    for (int i = 1; i <= n; i++) {
+        for (int j = i; j <= n; j++) {
+            if (extraSpaces[i][j] < 0) {
+                cost[i][j] = INT_MAX;  // Invalid line break position.
+            } else if (j == n && extraSpaces[i][j] >= 0) {
+                cost[i][j] = 0;  // Last line, no cost for extra spaces.
+            } else {
+                cost[i][j] = pow(extraSpaces[i][j], 2);
+            }
+        }
+    }
+                    
+// Calculate the minimum cost using dynamic programming.
+    vector&lt;int&gt; dp(n + 1, 0);
+    vector&lt;int&gt; breaks(n + 1, 0);
+    dp[n] = 0;
+    for (int i = n - 1; i >= 1; i--) {
+        dp[i] = INT_MAX;
+        for (int j = i; j <= n; j++) {
+            if (cost[i][j] != INT_MAX && dp[j + 1] != INT_MAX && dp[i] > cost[i][j] + dp[j + 1]) {
+                dp[i] = cost[i][j] + dp[j + 1];
+                breaks[i] = j;
+            }
+        }
+    }
+                    
+// Print the neatly formatted text.
+    int idx = 1;
+    while (idx <= n) {
+        cout << "Line " << idx << ": ";
+        for (int i = idx; i <= breaks[idx]; i++) {
+            cout << nums[i - 1] << " ";
+        }
+        cout << endl;
+        idx = breaks[idx] + 1;
+    }
+                    
+    cout << "Total cost: " << dp[1] << endl;
+}
+                    
+int main() {
+    int n, K;
+    cout << "Enter the number of words: ";
+    cin >> n;
+                    
+    vector&lt;int&gt; nums(n);
+    cout << "Enter the number of characters in each word:\n ";
+    for (int i = 0; i < n; i++)
+        cin >> nums[i];
+                    
+    cout << "Enter the line width limit: ";
+    cin >> K;
+                    
+    cout << "Neatly formatted text:\n ";
+    printNeatly(nums, K);
+                    
+    return 0;
+}
+</code></pre>
+            </li>
+            <li><b>Given a binary tree. Find the size of its largest subtree that is a Binary Search Tree.</b>
+                <pre class="language-c++ "><code>#include&lt;iostream&gt;
+#include&lt;climits&gt;
+using namespace std;
+                    
+// Structure for a binary tree node
+struct Node {
+    int data;
+    Node* left;
+    Node* right;
+};
+                    
+// Function to create a new node
+Node* newNode(int data) {
+    Node* node = new Node;
+    node->data = data;
+    node->left = node->right = nullptr;
+    return node;
+}
+                    
+// Structure to store information about a subtree
+struct SubtreeInfo {
+    int size;           // Size of the subtree
+    int minVal;         // Minimum value in the subtree
+    int maxVal;         // Maximum value in the subtree
+    bool isBST;         // Whether the subtree is a BST or not
+};
+                    
+// Function to find the largest BST subtree size in a binary tree
+int largestBSTSubtreeSize(Node* root) {
+    SubtreeInfo info = findLargestBSTSubtree(root);
+    return info.size;
+}
+                    
+// Helper function to find the largest BST subtree
+SubtreeInfo findLargestBSTSubtree(Node* root) {
+    if (root == nullptr) {
+// Empty subtree
+        return {0, INT_MAX, INT_MIN, true};
+    }
+                    
+    SubtreeInfo leftInfo = findLargestBSTSubtree(root->left);
+    SubtreeInfo rightInfo = findLargestBSTSubtree(root->right);
+                    
+    SubtreeInfo currentInfo;
+    currentInfo.size = 0;
+    currentInfo.minVal = min(root->data, min(leftInfo.minVal, rightInfo.minVal));
+    currentInfo.maxVal = max(root->data, max(leftInfo.maxVal, rightInfo.maxVal));
+                    
+    if (leftInfo.isBST && rightInfo.isBST && root->data > leftInfo.maxVal && root->data &lt; rightInfo.minVal) {
+// Current subtree is a BST
+        currentInfo.isBST = true;
+        currentInfo.size = 1 + leftInfo.size + rightInfo.size;
+    } else {
+// Current subtree is not a BST
+        currentInfo.isBST = false;
+        currentInfo.size = max(leftInfo.size, rightInfo.size);
+    }
+                    
+    return currentInfo;
+}
+                    
+int main() {
+// Construct the binary tree
+    Node* root = newNode(10);
+    root->left = newNode(5);
+    root->right = newNode(15);
+    root->left->left = newNode(1);
+    root->left->right = newNode(8);
+    root->right->right = newNode(7);
+                    
+// Find the size of the largest BST subtree
+    int largestSize = largestBSTSubtreeSize(root);
+                    
+    cout << "Size of the largest BST subtree: " << largestSize << endl;
+                    
+    return 0;
+}
+</code></pre>
+            </li>
+            <li><b>Given the mobile numeric keypad. You can only press buttons that are up, left, right, or down to the current button or the current button itself (like 00,11, etc.). You are not allowed to press the bottom row corner buttons (i.e. * and # ). Given a number N, the task is to find out the number of possible numbers of the given length.</b>
+                <pre class="language-c++ "><code>#include&lt;iostream&gt;
+#include&lt;vector&gt;
+using namespace std;
+                    
+// Function to calculate the count of possible numbers
+int countPossibleNumbers(int N) {
+    if (N == 1)
+        return 10;
+                    
+// Define the adjacency matrix representing the possible movements from one digit to another
+    vector&lt;vector&lt;int&gt;&gt; adjMatrix = {
+        {0, 8},     // 0 can move to 8
+        {1, 2, 4},  // 1 can move to 2, 4
+        {1, 2, 3, 5},  // 2 can move to 1, 3, 5
+        {2, 3, 6},  // 3 can move to 2, 6
+        {1, 4, 5, 7},  // 4 can move to 1, 5, 7
+        {2, 4, 5, 6, 8},  // 5 can move to 2, 4, 6, 8
+        {3, 5, 6, 9},  // 6 can move to 3, 5, 9
+        {4, 7, 8},  // 7 can move to 4, 8
+        {5, 7, 8, 9, 0},  // 8 can move to 5, 7, 9, 0
+        {6, 8, 9}  // 9 can move to 6, 8
+    };
+                    
+// Initialize the count array for each digit at each length
+    vector&lt;vector&lt;int&gt;&gt; count(N + 1, vector&lt;int&gt;(10, 0));
+                    
+// Initialize the count for length 1 as 1 for each digit
+    for (int i = 0; i <= 9; i++)
+        count[1][i] = 1;
+                    
+// Calculate the count for each length
+    for (int len = 2; len <= N; len++) {
+        for (int i = 0; i <= 9; i++) {
+            for (int j : adjMatrix[i]) {
+                count[len][i] += count[len - 1][j];
+            }
+        }
+    }
+                    
+// Calculate the total count for all lengths
+    int totalCount = 0;
+    for (int i = 0; i <= 9; i++) {
+        totalCount += count[N][i];
+    }
+                    
+    return totalCount;
+}
+                    
+int main() {
+    int N;
+    cout << "Enter the length of the numbers: ";
+    cin >> N;
+                    
+    int possibleNumbers = countPossibleNumbers(N);
+                    
+    cout << "Number of possible numbers of length " << N << ": " << possibleNumbers << endl;
+                    
+    return 0;
+}
+</code></pre>
+            </li>
+        </ol>
+    </div>
+</body>
+
+</html>
